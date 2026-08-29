@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {ref} from "vue";
 
 export const useUserStore = defineStore('userStore', (initialState) => {
-    const id = ref(0)
+    const id = ref()
     const username = ref('')
     const photo = ref('')
     const profile = ref('')
