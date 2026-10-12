@@ -1,0 +1,54 @@
+from django.utils.timezone import now
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from web.models.user import UserProfile
+from web.views.utils.photo import remove_old_photo
+
+
+class UpdataProfileView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post (self, request):
+        try:
+            user = request.user
+            user_profile = UserProfile.objects.get(user=user)
+
+            username = request.data.get('username').strip()
+            photo = request.data.get('photo', None)
+            profile = request.data.get('profile').strip()[:500]
+
+            if not username:
+                return Response({
+                    'result': '用户名不能为空'
+                })
+            if not profile:
+                return Response({
+                    'result': '简介不能为空'
+                })
+            if username != user.username and user.objects.filter(username=username).exists():
+                return Response({
+                    'result': '用户名已存在'
+                })
+            if photo:
+                remove_old_photo(user_profile.photo)
+                user_profile.photo = photo
+
+            user.username = username
+            user.save()
+            user_profile.profile = profile
+            user_profile.update_time = now()
+            user_profile.save()
+
+            return Response({
+                'result': 'success',
+                'user_id': user.id,
+                'username': user.username,
+                'profile': user_profile.profile,
+                'photo': user_profile.photo,
+            })
+        except:
+            return ({
+                'result': '系统异常，请稍后重试'
+            })
