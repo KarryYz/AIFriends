@@ -1,0 +1,40 @@
+{
+    "name": "@types/croppie",
+    "version": "2.6.4",
+    "description": "TypeScript definitions for croppie",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/croppie",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Connor Peet",
+            "githubUsername": "connor4312",
+            "url": "https://github.com/connor4312"
+        },
+        {
+            "name": "dklmuc",
+            "githubUsername": "dklmuc",
+            "url": "https://github.com/dklmuc"
+        },
+        {
+            "name": "Sarun Intaralawan",
+            "githubUsername": "sarunint",
+            "url": "https://github.com/sarunint"
+        },
+        {
+            "name": "Knut Erik Helgesen",
+            "githubUsername": "knuthelgesen",
+            "url": "https://github.com/knuthelgesen"
+        }
+    ],
+    "main": "",
+    "types": "index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+        "directory": "types/croppie"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "7e310717fb037e7a6986d920431d49de31d1b742b16e9c83bbb49e4118ccb12f",
+    "typeScriptVersion": "4.5"
+}

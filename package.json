@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "croppie": "^2.6.5"
+  },
+  "devDependencies": {
+    "@types/croppie": "^2.6.4"
+  }
+}
