@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from web.models.character import Character
 # from django.contrib.auth.models import User
 
 
@@ -16,3 +18,6 @@ class UserProfileAdmin(admin.ModelAdmin):
 #
 #     readonly_fields = ('create_time',)
 
+@admin.register(Character)
+class CharacterAdmin(admin.ModelAdmin):
+    raw_id_fields = ('author', )
