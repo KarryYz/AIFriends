@@ -4,7 +4,7 @@ import Name from "@/views/create/character/components/Name.vue";
 import Photo from "@/views/create/character/components/Photo.vue";
 import Profile from "@/views/create/character/components/Profile.vue";
 import BackgroundImage from "@/views/create/character/components/BackgroundImage.vue";
-import {ref, useTemplateRef} from "vue";
+import {onMounted, ref, useTemplateRef} from "vue";
 import api from "@/js/http/api.js";
 import {base64ToFile} from "@/js/utils/base64_to_file.js";
 import {useUserStore} from "@/stores/user.js";
@@ -19,6 +19,7 @@ const errorMessage = ref('')
 
 const router = useRouter()
 const user = useUserStore()
+
 
 async function handleCreate() {
   const photo = photoRef.value.myPhoto
@@ -35,8 +36,8 @@ async function handleCreate() {
   } else if (! backgroundImage) {
     errorMessage.value = "角色背景不能为空"
   } else {
-
     const formData = new FormData()
+
     formData.append ("photo", base64ToFile(photo, "photo.png"))
     formData.append ("name", name)
     formData.append("profile", profile)
@@ -57,7 +58,7 @@ async function handleCreate() {
         errorMessage.value = data.result
       }
     } catch (e) {
-      console.log(e)
+
     }
   }
 

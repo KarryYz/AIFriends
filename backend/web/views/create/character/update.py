@@ -3,17 +3,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from web.models.user import UserProfile
+from web.models.character import Character
 from web.views.utils.photo import remove_old_photo
 
 
 class UpdateCharacterView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
             character_id = request.data.get('character_id')
-            character = UserProfile.objects.get(id=character_id,author__user=request.user)
+            character = Character.objects.get(id=character_id,author__user=request.user)
             name = request.data.get('name').strip()
             profile = request.data.get('profile').strip()[:100000]
             photo = request.FILES.get('photo', None)
@@ -36,7 +36,7 @@ class UpdateCharacterView(APIView):
 
             character.name = name
             character.profile = profile
-            character.update_time = now
+            character.update_time = now()
             character.save()
 
             return Response({
