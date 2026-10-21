@@ -42,6 +42,8 @@ async function handleUpdate() {
 
       if (data.result === 'success') {
         user.setUserInfo(data)
+      } else {
+        errorMessage.value = data.result
       }
 
     }catch(err) {
