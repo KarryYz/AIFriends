@@ -12,7 +12,7 @@ class GetOrCreateFriendView(APIView):
     def post(self, request):
         try:
             character_id = request.data['character_id']
-            user = request.data['user']
+            user = request.user
             user_profile = UserProfile.objects.get(user=user)
             friends = Friend.objects.filter(character_id=character_id, me=user_profile)
 
