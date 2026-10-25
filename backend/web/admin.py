@@ -9,3 +9,8 @@ from web.models.character import Character
 @admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
     raw_id_fields = ('author', )
+
+from web.models.friend import Friend
+@admin.register(Friend)
+class FriendAdmin(admin.ModelAdmin):
+    raw_id_fields = ('me', 'character')
