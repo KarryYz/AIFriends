@@ -13,7 +13,7 @@ class RemoveFriendView(APIView):
             friend_id = request.data['friend_id']
             Friend.objects.filter(pk=friend_id, me__user=request.user).delete()
             return Response({
-                'status': 'success',
+                'result': 'success',
             })
         except:
             return Response ({
