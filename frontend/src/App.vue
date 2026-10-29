@@ -12,7 +12,7 @@ const user = useUserStore();
 
 onMounted(async () => {
   try {
-    const res = await api.get("api/user/account/get_user_info/", )
+    const res = await api.get("/api/user/account/get_user_info/", )
     const data = res.data
     if (data.result === 'success') {
       user.setUserInfo(data)
