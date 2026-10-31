@@ -1,13 +1,19 @@
 import os
+from pprint import pprint
 from typing import TypedDict, Annotated, Sequence
 
+import lancedb
 from django.utils.timezone import localtime, now
+from langchain_community.vectorstores import LanceDB
 from langchain_core.tools import tool
 from langchain_core.messages import BaseMessage
 from langchain_openai import ChatOpenAI
 from langgraph.constants import END, START
 from langgraph.graph import add_messages, StateGraph
 from langgraph.prebuilt import ToolNode
+
+from web.documents.utils.custom_embeddings import CustomEmbeddings
+from web.utils.llm_factory import get_llm
 
 
 class ChatGraph:
@@ -18,20 +24,27 @@ class ChatGraph:
             """当需要查询精确时间时，调用此函数。返回格式为：[年-月-日 时:分:秒]"""
             return localtime(now()).strftime('%Y-%m-%d %H:%M:%S')
 
-        tools = [get_time]
+        @tool
+        def search_knowledge_base(query: str) -> str:
+            """当用户查询阿里云百炼平台的相关信息时，调用此函数。输入为要查询的问题，输出为查询结果。"""
+            db = lancedb.connect('./web/documents/lancedb_storage')
+            embeddings = CustomEmbeddings()
+            vector_db = LanceDB(
+                connection=db,
+                embedding=embeddings,
+                table_name='my_knowledge_base',
+            )
+            docs = vector_db.similarity_search(query, k=3)
+            context = '\n\n'.join([f'内容片段：{i + 1}\n{doc.page_content}' for i, doc in enumerate(docs)])
+            return f'从知识库中找到以下相关信息：\n\n{context}\n'
+
+        tools = [get_time, search_knowledge_base]
 
         # 1.初始化大模型对象，对接deepseek
-        llm = ChatOpenAI(
-            model="deepseek-flash",
-            openai_api_key = os.getenv('API_KEY'), #从环境变量读取密钥
-            openai_api_base = os.getenv('API_BASE'), #deepseek接口地址
-            streaming = True,  # 流式输出
-            model_kwargs = {
-                "stream_options": {
-                    "include_usage": True,  # 输出token消耗数量
-                }
-            }
-        ).bind_tools(tools)
+        llm = get_llm(
+            streaming=True,
+            bind_tools=tools
+        )
 
         # 2.定义AgentState：图的状态（全局存储，整个graph流程共享的数据）
         class AgentState(TypedDict):
@@ -44,6 +57,7 @@ class ChatGraph:
         def model_call(state: AgentState) -> AgentState:
             # state["messages"]拿到当前状态里全部历史消息，传给大模型
             res = llm.invoke(state["messages"])
+            pprint(state['messages'])
             # 返回新消息，add_messages会自动把res追加到messages列表，不是覆盖
             return {
                 'messages': [res]

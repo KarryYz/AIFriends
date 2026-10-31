@@ -6,14 +6,14 @@ from langchain_openai import ChatOpenAI
 from langgraph.constants import START, END
 from langgraph.graph import add_messages, StateGraph
 
+from web.utils.llm_factory import get_llm
+
 
 class MemoryGraph:
     @staticmethod
     def create_app ():
-        llm = ChatOpenAI (
-            model="deepseek-flash",
-            openai_api_key = os.getenv('API_KEY'), #从环境变量读取密钥
-            openai_api_base = os.getenv('API_BASE'), #deepseek接口地址
+        llm = get_llm(
+            streaming=False,
         )
 
         class AgentState(TypedDict):  # 数据类型
